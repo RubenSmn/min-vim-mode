@@ -12,7 +12,7 @@ const blockKeybindings = document.createElement("input");
 blockKeybindings.style = "position: fixed; top: 0; left: -9999px;"; // display: none; doesn't work
 document.body.appendChild(blockKeybindings);
 
-function createLinkItem(link, rect, key) {
+function createLinkItem(_link, rect, key) {
   const item = document.createElement("span");
   item.setAttribute(
     "style",
@@ -60,7 +60,7 @@ let typedText = "";
 
 // This ensures blockKeybindings doesn't get blurred because of
 // unintentional clicks of the user
-document.body.addEventListener("click", function () {
+document.body.addEventListener("click", () => {
   if (isLinkKeyMode) {
     blockKeybindings.select();
   }
@@ -75,7 +75,7 @@ function showLinkKeys() {
 
   [].slice
     .call(document.querySelectorAll("a, button, input, textarea, select"))
-    .forEach(function (link) {
+    .forEach((link) => {
       const rect = link.getBoundingClientRect();
       if (isVisible(rect)) {
         links.push(link);
@@ -83,7 +83,7 @@ function showLinkKeys() {
       }
     });
 
-  links.forEach(function (link, i) {
+  links.forEach((link, i) => {
     const key = getNextKeyCombination(currentLinkItems.length);
     const item = createLinkItem(link, linkRects[i], key);
     currentLinkItems.push({
@@ -106,7 +106,7 @@ function onTextTyped(key) {
   typedText += key;
 
   let viableElementRemaining = false;
-  currentLinkItems.forEach(function (link) {
+  currentLinkItems.forEach((link) => {
     if (link.key === typedText) {
       viableElementRemaining = true;
       if (link.link.tagName === "A") {
@@ -153,7 +153,7 @@ function onTextTyped(key) {
 
 document.addEventListener(
   "visibilitychange",
-  function () {
+  () => {
     if (document.visibilityState !== "hidden" && isLinkKeyMode) {
       blockKeybindings.select();
     } else if (document.visibilityState !== "hidden" && !isLinkKeyMode) {
@@ -189,7 +189,7 @@ function copyToClipboard(text) {
 // github.com for example has a lot of vim-like bindings of its own.
 
 // We put scrolling here in keydown, so that we can continously press it.
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", (e) => {
   if (
     (e.key === "j" || e.key === "k") &&
     !isLinkKeyMode &&
@@ -205,7 +205,7 @@ document.addEventListener("keydown", function (e) {
 
 const commandChars = new Set(["f", "F", "y", "g", "G", "c"]);
 const linkChars = new Set(alphabet);
-document.addEventListener("keyup", function (e) {
+document.addEventListener("keyup", (e) => {
   if (e.key === "Escape" && isLinkKeyMode) {
     hideLinkKeys();
     blockKeybindings.blur();
@@ -262,7 +262,7 @@ document.addEventListener("keyup", function (e) {
       // TODO: Check if timeout has been set
       // Reset typed command after KEY_TIMEOUT milliseconds
       // This is the time the user has to type the full command
-      setTimeout(function () {
+      setTimeout(() => {
         command = "";
       }, KEY_TIMEOUT);
     } else if (match) {
@@ -272,6 +272,5 @@ document.addEventListener("keyup", function (e) {
     e.preventDefault();
   } else if (isLinkKeyMode && linkChars.has(e.key)) {
     onTextTyped(e.key);
-    // e.preventDefault()
   }
 });
