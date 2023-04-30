@@ -111,12 +111,7 @@ function onTextTyped(key) {
       viableElementRemaining = true;
       if (link.link.tagName === "A") {
         if (linkAction === "copyToClipboard") {
-          const dummy = document.createElement("input");
-          dummy.value = link.link.href;
-          document.body.appendChild(dummy);
-          dummy.select();
-          document.execCommand("copy");
-          document.body.removeChild(dummy);
+          copyToClipboard(link.link.href);
         } else if (linkAction === "openInNewTab") {
           window.open(link.link.href);
         } else {
@@ -186,15 +181,8 @@ function isFocusable(element) {
   );
 }
 
-function copyUrlToClipboard() {
-  const dummy = document.createElement("input");
-  const text = window.location.href;
-
-  document.body.appendChild(dummy);
-  dummy.value = text;
-  dummy.select();
-  document.execCommand("copy");
-  document.body.removeChild(dummy);
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
 }
 // (maybe) Future TODO:
 // We should provide means to disable the keybings for a blacklist of websites
@@ -258,7 +246,7 @@ document.addEventListener("keyup", function (e) {
         window.scrollBy(0, -60);
         break;
       case "yy":
-        copyUrlToClipboard();
+        copyToClipboard(window.location.href);
         break;
       case "gg":
         window.scrollTo(0, 0);
