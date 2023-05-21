@@ -119,6 +119,7 @@ function onTextTyped(key) {
         }
       } else if (link.link.tagName === "BUTTON") {
         link.link.click();
+        link.link.focus();
       } else if (isFocusable(link.link)) {
         link.link.focus();
         if (
