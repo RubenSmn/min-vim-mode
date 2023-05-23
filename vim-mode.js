@@ -6,6 +6,7 @@
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 let command = "";
+let isInMotion = false;
 const KEY_TIMEOUT = 1000;
 
 const blockKeybindings = document.createElement("input");
@@ -194,7 +195,8 @@ document.addEventListener("keydown", (e) => {
   if (
     (e.key === "j" || e.key === "k") &&
     !isLinkKeyMode &&
-    !isCurrentlyInInput()
+    !isCurrentlyInInput() &&
+    !isInMotion
   ) {
     if (e.key === "j") {
       window.scrollBy(0, 60);
@@ -204,9 +206,12 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-const commandChars = new Set(["f", "F", "y", "g", "G", "c"]);
+const commandChars = new Set(["f", "F", "j", "k", "y", "g", "G", "c"]);
 const linkChars = new Set(alphabet);
 document.addEventListener("keyup", (e) => {
+  const isNumber = Number.isInteger(parseInt(e.key));
+  if (isNumber) isInMotion = true;
+
   if (e.key === "Escape" && isLinkKeyMode) {
     hideLinkKeys();
     blockKeybindings.blur();
@@ -215,7 +220,7 @@ document.addEventListener("keyup", (e) => {
   } else if (
     !isCurrentlyInInput() &&
     !isLinkKeyMode &&
-    commandChars.has(e.key) &&
+    (commandChars.has(e.key) || isNumber) &&
     !e.ctrlKey &&
     !e.metaKey
   ) {
@@ -238,13 +243,13 @@ document.addEventListener("keyup", (e) => {
         blockKeybindings.select();
         linkAction = "copyToClipboard";
         break;
-      // Use j to scroll down
-      case "j":
-        window.scrollBy(0, 60);
+      case /\d+j/.test(command) && command:
+        window.scrollBy(0, parseInt(command) * 60);
+        isInMotion = false;
         break;
-      // Use k to scroll up
-      case "k":
-        window.scrollBy(0, -60);
+      case /\d+k/.test(command) && command:
+        window.scrollBy(0, parseInt(command) * -60);
+        isInMotion = false;
         break;
       case "yy":
         copyToClipboard(window.location.href);
@@ -266,7 +271,7 @@ document.addEventListener("keyup", (e) => {
       setTimeout(() => {
         command = "";
       }, KEY_TIMEOUT);
-    } else if (match) {
+    } else if (match || !isInMotion) {
       command = "";
       // We could also add it to a buffer here for repeating the action via '.' as in Vim
     }
