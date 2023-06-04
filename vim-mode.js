@@ -55,6 +55,7 @@ function getNextKeyCombination(index) {
   }
 }
 
+let allLinksOnPage = null;
 let currentLinkItems = [];
 let isLinkKeyMode = false;
 let linkAction = null;
@@ -75,15 +76,19 @@ function showLinkKeys() {
   const links = [];
   const linkRects = [];
 
-  [].slice
-    .call(document.querySelectorAll("a, button, input, textarea, select"))
-    .forEach((link) => {
-      const rect = link.getBoundingClientRect();
-      if (isVisible(rect)) {
-        links.push(link);
-        linkRects.push(rect);
-      }
-    });
+  if (allLinksOnPage === null) {
+    allLinksOnPage = document.querySelectorAll(
+      "a, button, input, textarea, select"
+    );
+  }
+
+  allLinksOnPage.forEach((link) => {
+    const rect = link.getBoundingClientRect();
+    if (isVisible(rect)) {
+      links.push(link);
+      linkRects.push(rect);
+    }
+  });
 
   links.forEach((link, i) => {
     const key = getNextKeyCombination(currentLinkItems.length);
