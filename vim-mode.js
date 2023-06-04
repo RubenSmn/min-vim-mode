@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name Vim Mode
 // @match *
+// @exclude https://www.youtube.com/watch/*
 // @run-at document-start
 // ==/UserScript==
 
