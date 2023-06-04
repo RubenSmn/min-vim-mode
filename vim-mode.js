@@ -202,7 +202,8 @@ document.addEventListener("keydown", (e) => {
     (e.key === "j" || e.key === "k") &&
     !isLinkKeyMode &&
     !isCurrentlyInInput() &&
-    !isInMotion
+    !isInMotion &&
+    !e.altKey
   ) {
     if (e.key === "j") {
       window.scrollBy(0, 60);
@@ -227,7 +228,7 @@ document.addEventListener("keyup", (e) => {
     !isCurrentlyInInput() &&
     !isLinkKeyMode &&
     (commandChars.has(e.key) || isNumber) &&
-    !e.ctrlKey &&
+    (!e.ctrlKey || !e.altKey) &&
     !e.metaKey
   ) {
     command += e.key;
